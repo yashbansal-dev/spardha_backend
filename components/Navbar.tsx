@@ -101,6 +101,8 @@ export default function Navbar() {
                                     width={112}
                                     height={112}
                                     className="object-contain"
+                                    quality={100}
+                                    unoptimized={true}
                                 />
                             </div>
                             <div className="flex flex-col justify-center h-full">

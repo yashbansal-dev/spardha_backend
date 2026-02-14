@@ -7,7 +7,8 @@ export default function Footer() {
         <footer className="bg-[#050505] pt-8 pb-4 relative overflow-hidden font-sans">
 
             {/* Background Texture/Gradient */}
-            <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+            {/* Background Texture/Gradient */}
+
             <div className="absolute -left-[20%] top-[20%] w-[50%] h-[50%] bg-neon-cyan/5 rounded-full blur-[150px] pointer-events-none"></div>
 
             <div className="container mx-auto px-6 md:px-12">

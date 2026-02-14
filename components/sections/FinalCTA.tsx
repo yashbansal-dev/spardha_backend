@@ -7,40 +7,86 @@ import Image from "next/image";
 
 export default function FinalCTA() {
     return (
-        <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#050505] perspective-container py-20 md:py-0">
+        <section id="register" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#050505] perspective-container py-20 md:py-0">
 
             {/* --- CINEMATIC TUNNEL ATMOSPHERE --- */}
 
-            {/* 1. Base Darkening & Vignette */}
-            <div className="absolute inset-0 bg-black/80 z-0" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_90%)] z-10 pointer-events-none" />
+            {/* --- CINEMATIC HOME VIBE BACKGROUND --- */}
 
-            {/* 2. Warm Stadium Glow (Behind Ticket) */}
-            <div className="absolute inset-0 flex items-center justify-center z-0">
-                <div className="w-[60vw] h-[60vw] md:w-[40vw] md:h-[40vw] bg-amber-600/10 rounded-full blur-[100px] animate-pulse-slow" />
-                <div className="absolute w-[40vw] h-[40vw] md:w-[30vw] md:h-[30vw] bg-orange-500/5 rounded-full blur-[80px]" />
+            {/* --- CINEMATIC COLLAGE BACKGROUND --- */}
+
+            {/* 1. Dynamic 3-Column Marquee Collage */}
+            {/* 1. Fixed 3-Column Grid */}
+            {/* 1. Fixed 5-Column Grid (Full Width) */}
+            <div className="absolute inset-0 z-0 overflow-hidden flex gap-4 justify-center items-center opacity-100 select-none pointer-events-none">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full h-full p-4 font-sans uppercase">
+                    {/* Column 1 */}
+                    <StaticColumn images={[
+                        '/assets/gallery-all/DSC_0105.JPG',
+                        '/assets/gallery-all/121A0374.JPG',
+                        '/assets/gallery-all/DSC_0814.JPG'
+                    ]} />
+
+                    {/* Column 2 */}
+                    <StaticColumn images={[
+                        '/assets/gallery-all/121A0227.JPG',
+                        '/assets/gallery-all/DSC_0469.JPG',
+                        '/assets/gallery-all/121A0228.JPG'
+                    ]} className="mt-12 hidden md:flex" />
+
+                    {/* Column 3 (Center) */}
+                    <StaticColumn images={[
+                        '/assets/gallery-all/121A0938.JPG',
+                        '/assets/gallery-all/DSC_0369.JPG',
+                        '/assets/gallery-all/121A0231.JPG'
+                    ]} />
+
+                    {/* Column 4 */}
+                    <StaticColumn images={[
+                        '/assets/gallery-all/DSC_0232.JPG',
+                        '/assets/gallery-all/DSC_0386.JPG',
+                        '/assets/gallery-all/121A0238.JPG'
+                    ]} className="mt-20 hidden md:flex" />
+
+                    {/* Column 5 */}
+                    <StaticColumn images={[
+                        '/assets/gallery-all/DSC_8174.JPG',
+                        '/assets/gallery-all/DSC_0861.JPG',
+                        '/assets/gallery-all/121A0326.JPG'
+                    ]} className="hidden md:flex" />
+                </div>
             </div>
 
-            {/* 3. Light Beams (Cutting through fog) */}
-            <div className="absolute inset-0 z-0 overflow-hidden opacity-30">
-                <div className="absolute top-[-10%] left-[20%] w-[200px] h-[120vh] bg-gradient-to-b from-white/5 to-transparent -rotate-[15deg] blur-xl" />
-                <div className="absolute top-[-10%] right-[20%] w-[300px] h-[120vh] bg-gradient-to-b from-white/5 to-transparent rotate-[15deg] blur-xl" />
-            </div>
+            {/* 2. Optimized Visibility Overlay (Extremely subtle to maintain HD clarity) */}
+            <div className="absolute inset-0 bg-black/5 mix-blend-multiply z-0" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/20 z-0" />
 
-            {/* 4. Atmospheric Smoke / Fog */}
-            <SmokeLayer className="bottom-[-10%] left-[-10%] opacity-20" duration={15} delay={0} />
-            <SmokeLayer className="bottom-[-10%] right-[-10%] opacity-20" duration={18} delay={2} direction="left" />
-            <SmokeLayer className="bottom-[-20%] left-[20%] opacity-15" duration={20} delay={5} />
 
-            {/* 5. Looming Typography (Subtle) */}
+
+            {/* 4. Noise & Texture (Matches Hero) */}
+            <div className="absolute inset-0 bg-noise opacity-20 mix-blend-overlay z-10 pointer-events-none" />
+
+            {/* 3. Perspective Grid (Floor) - Subtle & Dark (Matches Hero) */}
+            <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-grid-perspective opacity-30 z-10 pointer-events-none"
+                style={{ maskImage: 'linear-gradient(to bottom, transparent, black)' }}
+            />
+
+            {/* 3. Bottom Fade-Out (Moved to cover Grid) */}
+            <div className="absolute inset-x-0 bottom-0 h-[40vh] bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent z-10 pointer-events-none" />
+
+            {/* 4. Top Fade-In (User Request - "Same as above") */}
+            <div className="absolute inset-x-0 top-0 h-[40vh] bg-gradient-to-b from-[#050505] via-[#050505]/80 to-transparent z-10 pointer-events-none" />
+
+            {/* 4. Ambient Glows (Matches Hero) */}
+            <div className="absolute top-1/2 left-1/4 w-[40vw] h-[40vw] bg-neon-cyan/5 rounded-full blur-[120px] pointer-events-none z-5" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[50vw] h-[50vw] bg-neon-orange/10 rounded-full blur-[100px] pointer-events-none z-5" />
+
+            {/* 5. Looming Watermark Text (Matches Hero Style) */}
             <div className="absolute top-[20%] inset-x-0 flex justify-center pointer-events-none z-0">
-                <h1 className="text-[15vw] font-black text-white/[0.03] tracking-widest uppercase leading-none font-gang blur-sm">
+                <h1 className="text-[15vw] font-black text-white/[0.03] tracking-widest uppercase leading-none font-gang select-none mix-blend-overlay">
                     ARENA
                 </h1>
             </div>
-
-            {/* 6. Floating Dust Particles */}
-            <FloatingParticles count={30} />
 
             {/* --- FOREGROUND CONTENT --- */}
             <div className="relative z-20 flex flex-col items-center gap-12">
@@ -59,11 +105,22 @@ export default function FinalCTA() {
                 </motion.div>
 
                 {/* The Realistic 3D Ticket */}
-                <div className="relative">
+                <motion.div
+                    className="relative"
+                    initial={{ opacity: 0, scale: 0.5, y: 100 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 12,
+                        delay: 0.4
+                    }}
+                >
                     {/* Backlight for Ticket */}
                     <div className="absolute inset-0 bg-orange-500/20 blur-[60px] -z-10 rounded-full" />
                     <Ticket />
-                </div>
+                </motion.div>
             </div>
 
             <style jsx global>{`
@@ -83,82 +140,21 @@ export default function FinalCTA() {
 
 // --- HELPER COMPONENTS ---
 
-function RotatingSpotlight({ className, duration = 10, delay = 0, reverse = false }: { className?: string, duration?: number, delay?: number, reverse?: boolean }) {
+function StaticColumn({ images, className }: { images: string[], className?: string }) {
     return (
-        <motion.div
-            className={`absolute rounded-full pointer-events-none z-0 mix-blend-screen ${className}`}
-            animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.1, 0.2, 0.1],
-                rotate: reverse ? [0, -360] : [0, 360],
-            }}
-            transition={{
-                duration: duration,
-                repeat: Infinity,
-                repeatType: "mirror", // Creates a breathing effect for scale/opacity, but rotation needs linear
-                ease: "linear",
-                delay: delay
-            }}
-        />
-    );
-}
-
-function SmokeLayer({ className, duration = 10, delay = 0, direction = "right" }: { className?: string, duration?: number, delay?: number, direction?: "left" | "right" }) {
-    const xRange = direction === "right" ? ["-10%", "10%"] : ["10%", "-10%"];
-
-    return (
-        <motion.div
-            className={`absolute w-[80vw] h-[60vh] bg-gradient-to-t from-gray-500/10 via-gray-500/5 to-transparent blur-[80px] rounded-full pointer-events-none z-10 mix-blend-screen ${className}`}
-            animate={{
-                x: xRange,
-                scale: [1, 1.1, 1],
-                opacity: [0.1, 0.2, 0.1],
-            }}
-            transition={{
-                duration: duration,
-                repeat: Infinity,
-                repeatType: "mirror",
-                ease: "easeInOut",
-                delay: delay
-            }}
-        />
-    );
-}
-
-function FloatingParticles({ count = 15 }: { count?: number }) {
-    // Generate random particles
-    const particles = Array.from({ length: count }).map((_, i) => ({
-        id: i,
-        x: Math.random() * 100,
-        y: Math.random() * 100,
-        size: Math.random() * 3 + 1,
-        duration: Math.random() * 15 + 10,
-        delay: Math.random() * 5
-    }));
-
-    return (
-        <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-            {particles.map((p) => (
-                <motion.div
-                    key={p.id}
-                    className="absolute rounded-full bg-amber-100/10 blur-[1px]"
-                    style={{
-                        left: `${p.x}%`,
-                        top: `${p.y}%`,
-                        width: p.size,
-                        height: p.size,
-                    }}
-                    animate={{
-                        y: [0, -120, 0],
-                        opacity: [0, 0.4, 0],
-                    }}
-                    transition={{
-                        duration: p.duration,
-                        repeat: Infinity,
-                        delay: p.delay,
-                        ease: "linear",
-                    }}
-                />
+        <div className={`relative flex flex-col gap-4 w-full h-full ${className}`}>
+            {images.map((src, i) => (
+                <div key={i} className="relative w-full aspect-[3/4] rounded-lg overflow-hidden bg-white/5 hover:scale-[1.02] transition-all duration-500">
+                    <Image
+                        src={src}
+                        alt="Collage Item"
+                        fill
+                        className="object-cover"
+                        quality={100}
+                        unoptimized={true}
+                        sizes="(max-width: 768px) 33vw, 20vw"
+                    />
+                </div>
             ))}
         </div>
     );
