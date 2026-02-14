@@ -43,7 +43,7 @@ export const ALL_SPORTS = [
         id: 'volleyball',
         name: 'Volleyball',
         icon: GiVolleyballBall,
-        bg: 'https://images.unsplash.com/photo-1592656094267-764a45160876?auto=format&fit=crop&q=80',
+        bg: '/assets/games/volleyball_v2.jpg',
         hasGender: true,
         fees: { boys: 250, girls: 0 },
         price: 250
@@ -52,7 +52,7 @@ export const ALL_SPORTS = [
         id: 'badminton',
         name: 'Badminton (Singles)',
         icon: GiShuttlecock,
-        bg: 'assets/games/badminton.jpg',
+        bg: '/assets/games/badminton_v2.jpg',
         hasGender: true,
         fees: { boys: 250, girls: 0 },
         price: 250

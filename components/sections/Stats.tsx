@@ -4,12 +4,11 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 const sportsArsenal = [
-    { name: "BASKETBALL", image: "/assets/games/Basketball.jpg", color: "from-orange-500 to-red-600" },
-    { name: "FOOTBALL", image: "/assets/games/Football.jpg", color: "from-green-500 to-emerald-600" },
-    { name: "CRICKET", image: "/assets/games/cricket.jpg", color: "from-blue-500 to-cyan-600" },
-    { name: "VOLLEYBALL", image: "/assets/games/Volleyball.jpg", color: "from-purple-500 to-pink-600" },
-    { name: "Table Tennis", image: "/assets/games/tt.jpg", color: "from-yellow-500 to-orange-600" },
-    { name: "BADMINTON", image: "/assets/games/Badminton.jpg", color: "from-red-500 to-rose-600" },
+    { name: "BASKETBALL", image: "/assets/games/basketball.JPG", color: "from-orange-500 to-red-600" },
+    { name: "FOOTBALL", image: "/assets/games/football.JPG", color: "from-green-500 to-emerald-600" },
+    { name: "CRICKET", image: "/assets/games/cricket.JPG", color: "from-blue-500 to-cyan-600" },
+    { name: "VOLLEYBALL", image: "/assets/games/volleyball_v2.jpg", color: "from-purple-500 to-pink-600" },
+    { name: "BADMINTON", image: "/assets/games/badminton_v2.jpg", color: "from-red-500 to-rose-600" },
 ];
 
 export default function SportsArsenal() {
