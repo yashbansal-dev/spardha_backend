@@ -63,10 +63,11 @@ export default function Hero() {
                 <AnimatePresence mode="popLayout">
                     <motion.div
                         key={currentImageIndex}
-                        className="absolute inset-0 bg-cover bg-center"
+                        className="absolute inset-0 bg-cover bg-center will-change-transform"
                         style={{
                             backgroundImage: `url("${HERO_IMAGES[currentImageIndex]}")`,
                             filter: 'brightness(0.5) contrast(1.1)',
+                            backfaceVisibility: 'hidden',
                         }}
                         initial={{
                             opacity: 0,

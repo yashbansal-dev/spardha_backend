@@ -79,8 +79,6 @@ export default function Story() {
                                 fill
                                 className="object-cover"
                                 priority
-                                quality={100}
-                                unoptimized={true}
                             />
                         </div>
                     </motion.div>
@@ -118,7 +116,6 @@ export default function Story() {
                                 alt="Basketball Action"
                                 fill
                                 className="object-cover"
-                                quality={100}
                             />
                         </div>
                     </motion.div>

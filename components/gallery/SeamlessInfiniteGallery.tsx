@@ -1,20 +1,19 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { motion, useMotionValue, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import { smartShuffle } from '@/utils/smartShuffle';
 import { SPORTS_IMAGES } from '@/data/galleryImages';
 
-// Game-world tiling configuration
+// ... existing constants ...
 const IMAGE_WIDTH = 320;
 const IMAGE_HEIGHT = 200;
 const SPACING = 40;
-
-// Calculate exact tile size based on 5x5 grid
 const TILE_WIDTH = 5 * IMAGE_WIDTH + 5 * SPACING;
 const TILE_HEIGHT = 5 * IMAGE_HEIGHT + 5 * SPACING;
 
-// Create base grid coordinates for a clean 5x5 tile
+// ... existing BASE_GRID ...
 const BASE_GRID = Array.from({ length: 5 }, (_, row) =>
     Array.from({ length: 5 }, (_, col) => ({
         x: col * (IMAGE_WIDTH + SPACING),
@@ -23,106 +22,113 @@ const BASE_GRID = Array.from({ length: 5 }, (_, row) =>
 ).flat();
 
 export default function SeamlessInfiniteGallery() {
-    const [offset, setOffset] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
-    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    // Motion Values for performant updates
+    const x = useMotionValue(0);
+    const y = useMotionValue(0);
+
+    // Smooth physics (optional, but good for drag momentum)
+    const smoothX = useSpring(x, { damping: 50, stiffness: 400 });
+    const smoothY = useSpring(y, { damping: 50, stiffness: 400 });
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isDragging = useRef(false);
+    const lastMousePos = useRef({ x: 0, y: 0 });
+
+    // Grid State (only updates when crossing tile boundaries)
+    const [gridOffset, setGridOffset] = useState({ x: 0, y: 0 });
     const [shuffledImages, setShuffledImages] = useState<string[]>([]);
-    const animationFrameRef = useRef<number | null>(null);
+
+    // Mouse Pos for cursor (keep in React state or use MotionValue if causing re-renders)
+    // Using motion value for cursor to avoid re-renders
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
 
     // Initialize shuffled images on mount
     useEffect(() => {
         setShuffledImages(smartShuffle(SPORTS_IMAGES));
     }, []);
 
-    // Generate tiled positions based on the current viewport window
-    const getTiledPositions = () => {
-        try {
-            if (shuffledImages.length === 0) return [];
-
-            const positions: Array<{ src: string; x: number; y: number; key: string }> = [];
-
-            // Determine which tile index the camera is currently over
-            const centerX = Math.floor(-offset.x / TILE_WIDTH);
-            const centerY = Math.floor(-offset.y / TILE_HEIGHT);
-
-            // Render a 3x3 window of tiles around the camera (reduced from 5x5)
-            for (let ty = centerY - 1; ty <= centerY + 1; ty++) {
-                for (let tx = centerX - 1; tx <= centerX + 1; tx++) {
-                    BASE_GRID.forEach((pos, idx) => {
-                        // local row/col in the 5x5 tile
-                        const tileRow = Math.floor(idx / 5);
-                        const tileCol = idx % 5;
-
-                        // global coordinate (in terms of image cells)
-                        const globalRow = ty * 5 + tileRow;
-                        const globalCol = tx * 5 + tileCol;
-
-                        // Linear spatial index:
-                        // Moving 1 cell right => index + 1
-                        // Moving 1 cell down => index + 5
-                        // This maintains local spatial coherence relative to the shuffled array
-                        // "Smart Shuffle" ensures A[i] and A[i+1]...A[i+4] are distinct.
-                        // So adjacent cells (horizontally and vertically) should be distinct events.
-                        const linearIndex = globalRow * 5 + globalCol;
-
-                        const len = shuffledImages.length;
-                        // Safe python-like modulo
-                        const imageIndex = ((linearIndex % len) + len) % len;
-                        const src = shuffledImages[imageIndex];
-
-                        if (src) {
-                            positions.push({
-                                src,
-                                x: pos.x + (tx * TILE_WIDTH),
-                                y: pos.y + (ty * TILE_HEIGHT),
-                                key: `${tx}-${ty}-${idx}`,
-                            });
-                        }
-                    });
-                }
-            }
-            return positions;
-        } catch (error) {
-            console.error("Error in getTiledPositions:", error);
-            return [];
+    // Update grid offset when motion values change significantly
+    useMotionValueEvent(x, "change", (latest) => {
+        const newGridX = Math.floor(-latest / TILE_WIDTH);
+        if (newGridX !== gridOffset.x) {
+            setGridOffset(prev => ({ ...prev, x: newGridX }));
         }
-    };
+    });
+
+    useMotionValueEvent(y, "change", (latest) => {
+        const newGridY = Math.floor(-latest / TILE_HEIGHT);
+        if (newGridY !== gridOffset.y) {
+            setGridOffset(prev => ({ ...prev, y: newGridY }));
+        }
+    });
+
+    const getTiledPositions = useCallback(() => {
+        if (shuffledImages.length === 0) return [];
+
+        const positions: Array<{ src: string; x: number; y: number; key: string }> = [];
+        const centerX = gridOffset.x;
+        const centerY = gridOffset.y;
+
+        // Render 3x3 window around current tile
+        for (let ty = centerY - 1; ty <= centerY + 1; ty++) {
+            for (let tx = centerX - 1; tx <= centerX + 1; tx++) {
+                BASE_GRID.forEach((pos, idx) => {
+                    const tileRow = Math.floor(idx / 5);
+                    const tileCol = idx % 5;
+                    const globalRow = ty * 5 + tileRow;
+                    const globalCol = tx * 5 + tileCol;
+                    const linearIndex = globalRow * 5 + globalCol;
+
+                    const len = shuffledImages.length;
+                    const imageIndex = ((linearIndex % len) + len) % len;
+                    const src = shuffledImages[imageIndex];
+
+                    if (src) {
+                        positions.push({
+                            src,
+                            x: pos.x + (tx * TILE_WIDTH),
+                            y: pos.y + (ty * TILE_HEIGHT),
+                            key: `${tx}-${ty}-${idx}`,
+                        });
+                    }
+                });
+            }
+        }
+        return positions;
+    }, [gridOffset, shuffledImages]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - offset.x, y: e.clientY - offset.y });
+        isDragging.current = true;
+        lastMousePos.current = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        setMousePos({ x: e.clientX, y: e.clientY });
-        if (!isDragging) return;
+        mouseX.set(e.clientX);
+        mouseY.set(e.clientY);
 
-        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
+        if (!isDragging.current) return;
 
-        animationFrameRef.current = requestAnimationFrame(() => {
-            const newX = e.clientX - dragStart.x;
-            const newY = e.clientY - dragStart.y;
-            setOffset({ x: newX, y: newY });
-        });
+        const dx = e.clientX - lastMousePos.current.x;
+        const dy = e.clientY - lastMousePos.current.y;
+
+        x.set(x.get() + dx);
+        y.set(y.get() + dy);
+
+        lastMousePos.current = { x: e.clientX, y: e.clientY };
     };
 
     const handleMouseUp = () => {
-        setIsDragging(false);
+        isDragging.current = false;
     };
 
     const handleWheel = (e: React.WheelEvent) => {
-        if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-
-        animationFrameRef.current = requestAnimationFrame(() => {
-            setOffset(prev => ({
-                x: prev.x - e.deltaX,
-                y: prev.y - e.deltaY
-            }));
-        });
+        x.set(x.get() - e.deltaX);
+        y.set(y.get() - e.deltaY);
     };
 
     const tiledPositions = getTiledPositions();
+
 
     return (
         <section
@@ -134,12 +140,14 @@ export default function SeamlessInfiniteGallery() {
             onWheel={handleWheel}
         >
             {/* Custom Shuttlecock Cursor */}
-            <div
+            <motion.div
                 className="fixed z-[100] pointer-events-none transition-transform duration-75 ease-out"
                 style={{
-                    left: `${mousePos.x}px`,
-                    top: `${mousePos.y}px`,
-                    transform: `translate(-50%, -50%) scale(${isDragging ? 0.8 : 1})`,
+                    x: mouseX,
+                    y: mouseY,
+                    translateX: "-50%",
+                    translateY: "-50%",
+                    scale: isDragging.current ? 0.8 : 1, // Note: this scale ref won't trigger re-render, fine for now or use useTransform
                 }}
             >
                 <svg width="32" height="48" viewBox="0 0 40 60" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
@@ -147,13 +155,14 @@ export default function SeamlessInfiniteGallery() {
                     <circle cx="20" cy="48" r="7" fill="#FFD700" />
                     <rect x="13" y="45" width="14" height="2" fill="#B22222" />
                 </svg>
-            </div>
+            </motion.div>
 
             {/* Tiled Canvas - Smooth unbounded world coordinate system */}
-            <div
+            <motion.div
                 className="absolute inset-0"
                 style={{
-                    transform: `translate3d(${offset.x}px, ${offset.y}px, 0)`,
+                    x: smoothX,
+                    y: smoothY,
                     willChange: 'transform',
                 }}
             >
@@ -182,17 +191,33 @@ export default function SeamlessInfiniteGallery() {
                         </div>
                     </div>
                 ))}
-            </div>
+            </motion.div>
 
             {/* HUD Info */}
             <div className="absolute bottom-6 left-6 flex flex-col gap-1 pointer-events-none">
                 <div className="text-white/20 font-mono text-[10px] tracking-widest uppercase">
                     Archive Link / System_Infinite
                 </div>
-                <div className="text-white/10 font-mono text-[9px]">
-                    COORD: {Math.round(offset.x)}, {Math.round(offset.y)} | POOL: {shuffledImages.length}
-                </div>
+                {/* Use a separate component or just hide coords if not needed, or use MotionValue to render text */}
+                <MotionCoordDisplay x={x} y={y} shuffles={shuffledImages.length} />
             </div>
         </section>
+    );
+}
+
+function MotionCoordDisplay({ x, y, shuffles }: { x: any, y: any, shuffles: number }) {
+    const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+    useMotionValueEvent(x, "change", (latest) => {
+        setCoords(prev => ({ ...prev, x: Math.round(latest as number) }));
+    });
+    useMotionValueEvent(y, "change", (latest) => {
+        setCoords(prev => ({ ...prev, y: Math.round(latest as number) }));
+    });
+
+    return (
+        <div className="text-white/10 font-mono text-[9px]">
+            COORD: {coords.x}, {coords.y} | POOL: {shuffles}
+        </div>
     );
 }

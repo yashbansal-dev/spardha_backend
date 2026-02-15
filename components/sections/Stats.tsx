@@ -39,7 +39,8 @@ export default function SportsArsenal() {
             <div className="relative overflow-hidden">
                 {/* Duplicate the cards for seamless loop */}
                 <motion.div
-                    className="flex gap-6"
+                    className="flex gap-6 will-change-transform"
+                    style={{ backfaceVisibility: "hidden", perspective: 1000 }}
                     animate={{
                         x: [0, -((320 + 24) * sportsArsenal.length)],
                     }}
@@ -97,8 +98,6 @@ function SportCard({ sport, index }: any) {
                         alt={sport.name}
                         fill
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
-                        quality={100}
-                        unoptimized={true}
                         sizes="(max-width: 768px) 90vw, 320px"
                     />
                     {/* Dark Overlay */}

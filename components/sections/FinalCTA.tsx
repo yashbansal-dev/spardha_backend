@@ -150,8 +150,6 @@ function StaticColumn({ images, className }: { images: string[], className?: str
                         alt="Collage Item"
                         fill
                         className="object-cover"
-                        quality={100}
-                        unoptimized={true}
                         sizes="(max-width: 768px) 33vw, 20vw"
                     />
                 </div>

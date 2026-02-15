@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from 'next/font/local';
 import { Alice } from 'next/font/google';
+import SmoothScroll from "@/components/ui/SmoothScroll";
 import "./globals.css";
 import ClientLoader from "@/components/ClientLoader";
 import { CartProvider } from "@/context/CartContext";
@@ -42,11 +43,13 @@ export default function RootLayout({
         className={`${gangOfThree.variable} ${alice.variable} antialiased font-gang`}
       >
         <CartProvider>
-          <ClientLoader>
-            <CustomCursor />
-            {children}
+          <SmoothScroll>
+            <ClientLoader>
+              <CustomCursor />
+              {children}
+            </ClientLoader>
             <CartDrawer />
-          </ClientLoader>
+          </SmoothScroll>
         </CartProvider>
       </body>
     </html>

@@ -7,8 +7,13 @@
   --foreground: #ffffff;
 }
 
+html {
+  background-color: #020617;
+  overscroll-behavior-y: none;
+}
+
 body {
-  background-color: transparent;
+  background-color: #020617;
   color: var(--foreground);
   overflow-x: hidden;
 }

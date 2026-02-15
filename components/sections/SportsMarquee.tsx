@@ -29,13 +29,16 @@ export default function SportsMarquee() {
             {/* CSS Animation Styles */}
             <style jsx>{`
                 @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
+                    0% { transform: translate3d(0, 0, 0); }
+                    100% { transform: translate3d(-50%, 0, 0); }
                 }
                 .animate-marquee {
                     display: flex;
                     width: max-content;
                     animation: marquee 60s linear infinite;
+                    will-change: transform;
+                    backface-visibility: hidden;
+                    perspective: 1000px;
                 }
                 .group:hover .animate-marquee {
                     animation-play-state: paused;
