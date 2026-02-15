@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Navbar from '@/components/Navbar';
 
@@ -20,9 +20,32 @@ const teamMembers = [
                 bio: 'Leading strategic initiatives with 15+ years of experience in sports management and academic excellence.'
             },
             {
-                name: 'Deepak Sogani',
-                position: 'Students Affairs - HEAD',
-                bio: 'Championing athletic development and fostering a culture of sportsmanship across the institution.'
+                name: 'Faculty Coordinator 1',
+                position: 'Faculty Coordinator',
+                bio: 'Dedicated to fostering student growth and ensuring smooth event execution.'
+            },
+            {
+                name: 'Faculty Coordinator 2',
+                position: 'Faculty Coordinator',
+                bio: 'Supporting the vision of Spardha with academic and logistical guidance.'
+            }
+        ]
+    },
+    {
+        role: 'Sports Affairs',
+        gradient: 'from-violet-500 via-purple-500 to-fuchsia-500',
+        members: [
+
+            {
+                name: 'Aman Prakash',
+                position: 'Sports Affairs',
+                image: '/assets/Core_photos/aman_prakash.jpg',
+                bio: 'Working to elevate the sports culture and infrastructure.'
+            },
+            {
+                name: 'Sports Affairs Member 2',
+                position: 'Sports Affairs',
+                bio: 'Ensuring seamless coordination between students and administration.'
             }
         ]
     },
@@ -46,6 +69,7 @@ const teamMembers = [
             {
                 name: 'Garv Sharma',
                 position: 'Organizing Head',
+                image: '/assets/Core_photos/garv_sharma.jpg',
                 bio: 'Seamlessly managing event operations and student collaboration.'
             },
             {
@@ -59,6 +83,7 @@ const teamMembers = [
         role: 'Core Committees',
         gradient: 'from-emerald-500 via-teal-500 to-cyan-500',
         members: [
+            { name: 'Parth Bhardwaj', position: 'Discipline Head', image: '/assets/Core_photos/parth_bhardwaj.jpg' },
             { name: 'Tanik Gupta', position: 'Discipline Head', image: '/assets/Core_photos/TanikGupta_Core_Discipline.jpg' },
             { name: 'Kartik Sharma', position: 'Internal Arrangements', image: '/assets/Core_photos/KartikSharma.jpg' },
             { name: 'Roshan Jangir', position: 'Photography & Social Media', image: '/assets/Core_photos/Roshan_jangir.jpg' },
@@ -70,7 +95,8 @@ const teamMembers = [
             { name: 'Parineeta Jain', position: 'Sponsorship & Promotion', image: '/assets/Core_photos/ParineetaJain.jpg' },
             { name: 'Gourang Tak', position: 'Transportation Head', image: '/assets/Core_photos/GourangTak.jpg' },
             { name: 'Rishika Sharma', position: 'Registration Head', image: '/assets/Core_photos/Rishikasharma.jpeg' },
-            { name: 'Akshali Srivastava', position: 'Media Head', image: '/assets/Core_photos/AkshaliSrivastava.jpg', rotate: 90 }
+            { name: 'Akshali Srivastava', position: 'Media Head', image: '/assets/Core_photos/AkshaliSrivastava.jpg', rotate: 90 },
+            { name: 'Pratigya Bomb', position: 'Registration Head', image: '/assets/Core_photos/pratigya_bomb.jpg' }
         ]
     },
     {
@@ -83,9 +109,9 @@ const teamMembers = [
             { name: 'Mayank Gautam', position: 'E-Sports Head', image: '/assets/Core_photos/MayankGautam.png' },
             { name: 'Shiva Shankar', position: 'Kabaddi & Kho-Kho Head', image: '/assets/Core_photos/ShivaShankar.jpg' },
             { name: 'Mayank Shankar Pathak', position: 'Box Cricket Head', image: '/assets/Core_photos/MayankShankarPathak.jpg' },
-            { name: 'Himanshu Gurjar', position: 'Volleyball Head' },
-            { name: 'Gaurav Singh Bora', position: 'Football Head' },
-            { name: 'Akshit Singhal', position: 'Badminton Head' },
+            { name: 'Himanshu Gurjar', position: 'Volleyball Head', image: '/assets/Core_photos/himanshu_gurjar.png' },
+            { name: 'Gaurav Singh Bora', position: 'Football Head', image: '/assets/Core_photos/gaurav_singh_bora.png' },
+            { name: 'Akshit Singhal', position: 'Badminton Head', image: '/assets/Core_photos/akshit_singhal.png' },
             { name: 'Mahesh Gehlot', position: 'Indoor Games Head', image: '/assets/Core_photos/MaheshGehlot.jpg' }
         ]
     }
@@ -97,6 +123,14 @@ const Team = () => {
     const isFullPage = pathname === '/team';
     const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
     const [hoveredEditorial, setHoveredEditorial] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.matchMedia("(max-width: 1024px)").matches);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     const content = (
         <div className={isFullPage ? 'min-h-screen bg-black pt-24' : ''}>
@@ -153,12 +187,13 @@ const Team = () => {
                                     <div className="w-16 h-[1px] bg-spardha-gold/40 mx-auto"></div>
                                 </motion.div>
 
-                                {/* EDITORIAL MINIMALIST DESIGN FOR FIRST TWO CATEGORIES */}
-                                {catIndex < 2 ? (
+                                {/* EDITORIAL MINIMALIST DESIGN FOR FIRST THREE CATEGORIES */}
+                                {catIndex < 3 ? (
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4 md:px-0">
                                         {category.members.map((member, memIndex) => {
                                             const cardId = `${catIndex}-${memIndex}`;
                                             const isHovered = hoveredEditorial === cardId;
+                                            const isActive = isMobile || isHovered;
 
                                             return (
                                                 <motion.div
@@ -173,7 +208,7 @@ const Team = () => {
                                                 >
                                                     <motion.div
                                                         animate={{
-                                                            height: isHovered ? '560px' : '480px'
+                                                            height: isActive ? '560px' : '480px'
                                                         }}
                                                         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                                                         className="relative bg-white/5 backdrop-blur-sm rounded-2xl overflow-hidden"
@@ -183,8 +218,8 @@ const Team = () => {
                                                             {/* Member Image Animation */}
                                                             <motion.div
                                                                 animate={{
-                                                                    filter: isHovered ? 'blur(0px) grayscale(0%)' : 'blur(8px) grayscale(60%)',
-                                                                    scale: isHovered ? 1.05 : 1
+                                                                    filter: isActive ? 'blur(0px) grayscale(0%)' : 'blur(8px) grayscale(60%)',
+                                                                    scale: isActive ? 1.05 : 1
                                                                 }}
                                                                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                                                                 className={`absolute inset-0 bg-gradient-to-br ${category.gradient}`}
@@ -198,7 +233,7 @@ const Team = () => {
                                                                             fill
                                                                             className="object-cover"
                                                                             style={{
-                                                                                /* @ts-expect-error: rotate exists on some members */
+
                                                                                 transform: member.rotate ? `rotate(${member.rotate}deg) scale(1.5)` : 'none'
                                                                             }}
                                                                             sizes="(max-width: 768px) 100vw, 50vw"
@@ -221,7 +256,7 @@ const Team = () => {
                                                             {/* Name and Position - Revealed on Bottom */}
                                                             <div className="absolute bottom-0 left-0 right-0 p-8">
                                                                 <motion.div
-                                                                    animate={{ y: isHovered ? 0 : 20, opacity: isHovered ? 1 : 0.8 }}
+                                                                    animate={{ y: isActive ? 0 : 20, opacity: isActive ? 1 : 0.8 }}
                                                                     transition={{ duration: 0.4 }}
                                                                 >
                                                                     <p className="text-xs text-spardha-gold uppercase tracking-[0.3em] font-semibold mb-2">
@@ -230,7 +265,7 @@ const Team = () => {
                                                                     <h4 className="text-3xl font-heading font-bold text-white tracking-tight">
                                                                         {member.name}
                                                                     </h4>
-                                                                    <p className={`mt-4 text-sm text-white/70 leading-relaxed max-w-xs transition-opacity duration-500 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+                                                                    <p className={`mt-4 text-sm text-white/70 leading-relaxed max-w-xs transition-opacity duration-500 ${isActive ? 'opacity-100' : 'opacity-0'}`}>
                                                                         {/* @ts-expect-error: bio exists on some members */}
                                                                         {member.bio}
                                                                     </p>
@@ -251,7 +286,8 @@ const Team = () => {
                                         {category.members.map((member, memIndex) => {
                                             const globalIndex = `${catIndex}-${memIndex}`;
                                             const isHovered = hoveredIndex === globalIndex;
-                                            const isAnyHovered = hoveredIndex !== null && hoveredIndex.startsWith(`${catIndex}-`);
+                                            const isAnyHovered = !isMobile && hoveredIndex !== null && hoveredIndex.startsWith(`${catIndex}-`);
+                                            const isActive = isMobile || isHovered;
 
                                             return (
                                                 <motion.div
@@ -263,9 +299,9 @@ const Team = () => {
                                                     onMouseEnter={() => setHoveredIndex(globalIndex)}
                                                     className="group relative transition-all duration-500 ease-out"
                                                     style={{
-                                                        flex: isHovered ? '5' : '1',
-                                                        minWidth: isAnyHovered && !isHovered ? '40px' : '90px',
-                                                        maxWidth: isHovered ? '450px' : '220px'
+                                                        flex: isActive ? '5' : '1',
+                                                        minWidth: isAnyHovered && !isActive ? '40px' : '90px',
+                                                        maxWidth: isActive ? '450px' : '220px'
                                                     }}
                                                 >
                                                     <div className="relative bg-spardha-base rounded-2xl overflow-hidden border border-spardha-gold/10 hover:border-spardha-gold/40 transition-all duration-500 h-[400px] hover:shadow-2xl hover:shadow-spardha-gold/20">
@@ -282,7 +318,7 @@ const Team = () => {
                                                                             fill
                                                                             className="object-cover"
                                                                             style={{
-                                                                                /* @ts-expect-error: rotate exists on some members */
+
                                                                                 transform: member.rotate ? `rotate(${member.rotate}deg) scale(1.5)` : 'none'
                                                                             }}
                                                                             sizes="(max-width: 768px) 100vw, 33vw"
@@ -302,13 +338,13 @@ const Team = () => {
 
                                                             {/* Initials Overlay */}
                                                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                                                <span className={`font-heading font-black text-white/30 group-hover:text-white/40 transition-all duration-500 ${isHovered ? 'text-5xl sm:text-6xl md:text-7xl lg:text-8xl' : 'text-4xl sm:text-5xl md:text-6xl'}`}>
+                                                                <span className={`font-heading font-black text-white/30 group-hover:text-white/40 transition-all duration-500 ${isActive ? 'text-5xl sm:text-6xl md:text-7xl lg:text-8xl' : 'text-4xl sm:text-5xl md:text-6xl'}`}>
                                                                     {member.name.split(' ').map(n => n[0]).join('')}
                                                                 </span>
                                                             </div>
 
                                                             {/* Info Bar - Slides up only on Hover */}
-                                                            <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 transition-all duration-500 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+                                                            <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/80 to-transparent p-6 transition-all duration-500 ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
                                                                 <h4 className="text-lg md:text-xl font-bold text-spardha-text mb-1 group-hover:text-spardha-gold transition-colors leading-tight">
                                                                     {member.name}
                                                                 </h4>
@@ -328,8 +364,8 @@ const Team = () => {
                         ))}
                     </div>
                 </div>
-            </section>
-        </div>
+            </section >
+        </div >
     );
 
     return content;
