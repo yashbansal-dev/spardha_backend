@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -245,10 +246,13 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
         <div className="relative w-full h-auto md:h-full rounded-[30px] overflow-hidden border-[1px] border-white/10 bg-[#1a1a1a] group cursor-default">
             {/* SPORT IMAGE BACKGROUND */}
             <div className="absolute inset-0 z-0">
-                <img
+                <Image
                     src={sport.image}
                     alt={sport.name}
-                    className="w-full h-full object-cover opacity-70 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 80vw"
+                    priority={index === 0}
+                    className="object-cover opacity-70 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700"
                 />
                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors duration-500"></div>
             </div>
@@ -283,7 +287,7 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
                 </div>
 
                 {/* RIGHT: Controls & Info */}
-                <div className="w-full md:flex-1 flex flex-col justify-start space-y-6 z-30">
+                <div className="w-full md:flex-1 flex flex-col justify-center space-y-6 z-30">
 
                     {/* Gender Toggle - ONLY SHOW IF HAS GENDER */}
                     {sport.hasGender && (

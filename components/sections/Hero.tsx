@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useMotionValue, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 
 const HERO_IMAGES = [
@@ -65,7 +66,7 @@ export default function Hero() {
                         key={currentImageIndex}
                         className="absolute inset-0 bg-cover bg-center will-change-transform"
                         style={{
-                            backgroundImage: `url("${HERO_IMAGES[currentImageIndex]}")`,
+                            // backgroundImage: `url("${HERO_IMAGES[currentImageIndex]}")`, // Removed to prevent double loading
                             filter: 'brightness(0.5) contrast(1.1)',
                             backfaceVisibility: 'hidden',
                         }}
@@ -85,7 +86,26 @@ export default function Hero() {
                             opacity: { duration: 1.2, ease: "easeInOut" },
                             scale: { duration: 7, ease: "linear" } // Slow zoom during display
                         }}
-                    />
+                    >
+                        <Image
+                            src={HERO_IMAGES[currentImageIndex]}
+                            alt="Hero Background"
+                            fill
+                            className="object-cover object-center"
+                            priority
+                            sizes="100vw"
+                        />
+                        {/* Preload next image for smoothness */}
+                        <div className="hidden">
+                            <Image
+                                src={HERO_IMAGES[(currentImageIndex + 1) % HERO_IMAGES.length]}
+                                alt="preload"
+                                width={10}
+                                height={10}
+                                priority
+                            />
+                        </div>
+                    </motion.div>
                 </AnimatePresence>
 
                 {/* Fallback/Base background */}
