@@ -9,6 +9,8 @@ import FinalEntryPass from './steps/FinalEntryPass';
 import ArenaPayment from './steps/ArenaPayment';
 import VictoryMoment from './steps/VictoryMoment';
 
+import { CartItem } from '@/context/CartContext';
+
 export type UserData = {
     fullName: string;
     college: string;
@@ -17,13 +19,7 @@ export type UserData = {
     phone: string;
 };
 
-export type SportItem = {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-    category?: string;
-};
+export type SportItem = CartItem;
 
 import { useCart } from '@/context/CartContext';
 
@@ -88,23 +84,23 @@ export default function GamifiedWizard() {
                     <div></div>
 
                     {/* Retro Level Indicator */}
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5 md:gap-2">
                         {steps.map((s) => (
                             <div
                                 key={s.id}
-                                className={`h-2 w-4 md:w-8 rounded-full transition-all duration-300 ${s.id <= step ? 'bg-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.5)]' : 'bg-white/10'}`}
+                                className={`h-1.5 md:h-2 w-3 md:w-8 rounded-full transition-all duration-300 ${s.id <= step ? 'bg-neon-cyan shadow-[0_0_10px_rgba(0,243,255,0.5)]' : 'bg-white/10'}`}
                             />
                         ))}
                     </div>
 
-                    <div className="font-mono font-bold text-neon-cyan">
+                    <div className="font-mono font-bold text-neon-cyan text-xs md:text-base">
                         LEVEL {step}/5
                     </div>
                 </div>
             </header>
 
             {/* Main Stage */}
-            <main className="flex-1 w-full max-w-7xl mx-auto pt-24 pb-12 px-4 relative overflow-hidden">
+            <main className="flex-1 w-full max-w-7xl mx-auto pt-24 pb-12 px-4 relative overflow-y-auto overflow-x-hidden">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={step}

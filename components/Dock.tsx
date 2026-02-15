@@ -158,14 +158,13 @@ export default function Dock({
 
     const dockStyles = isVertical
         ? `${className} pointer-events-auto flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl py-4 px-2 shadow-[0_4px_30px_rgba(0,0,0,0.5)]`
-        : `${className} pointer-events-auto flex items-start gap-2 md:gap-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl pt-3 px-2 md:px-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)]`;
+        : `${className} pointer-events-auto flex items-start gap-2 md:gap-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl pt-3 px-2 md:px-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] max-w-[95vw] overflow-x-auto no-scrollbar`;
 
     return (
         <motion.div
             style={{
                 height: isVertical ? 'auto' : height,
                 width: isVertical ? 'auto' : undefined,
-                scrollbarWidth: 'none'
             }}
             className={containerStyles}
         >

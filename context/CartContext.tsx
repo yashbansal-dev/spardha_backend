@@ -8,7 +8,8 @@ export interface CartItem {
     name: string;    // Sport Name
     category: string;// 'boys' | 'girls' | 'open'
     price: number;   // Numeric price
-    color: string;   // For UI emphasis
+    color?: string;  // For UI emphasis
+    image?: string;  // Background image
 }
 
 // Define the Context Shape

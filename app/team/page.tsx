@@ -1,5 +1,6 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import Image from 'next/image';
@@ -92,8 +93,8 @@ const teamMembers = [
 
 
 const Team = () => {
-    // Check if we are in the browser to safely use window
-    const isFullPage = typeof window !== 'undefined' ? window.location.pathname === '/team' : true;
+    const pathname = usePathname();
+    const isFullPage = pathname === '/team';
     const [hoveredIndex, setHoveredIndex] = useState<string | null>(null);
     const [hoveredEditorial, setHoveredEditorial] = useState<string | null>(null);
 
@@ -154,7 +155,7 @@ const Team = () => {
 
                                 {/* EDITORIAL MINIMALIST DESIGN FOR FIRST TWO CATEGORIES */}
                                 {catIndex < 2 ? (
-                                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4 md:px-0">
                                         {category.members.map((member, memIndex) => {
                                             const cardId = `${catIndex}-${memIndex}`;
                                             const isHovered = hoveredEditorial === cardId;
@@ -244,7 +245,7 @@ const Team = () => {
                                 ) : (
                                     /* ACCORDION DESIGN FOR OTHER CATEGORIES */
                                     <div
-                                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-nowrap gap-4 lg:gap-2 p-4 max-w-full overflow-hidden"
+                                        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:flex lg:flex-nowrap gap-4 lg:gap-2 p-4 max-w-full"
                                         onMouseLeave={() => setHoveredIndex(null)}
                                     >
                                         {category.members.map((member, memIndex) => {

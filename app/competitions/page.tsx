@@ -14,7 +14,7 @@ export default function Competitions() {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/90 z-10"></div>
                 {/* Placeholder for Sports Team Group Photo */}
                 <div
-                    className="w-full h-full bg-cover bg-center bg-no-repeat opacity-60 scale-105 animate-float"
+                    className="w-full h-full bg-cover bg-center bg-no-repeat opacity-60 scale-105 md:animate-float"
                     style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1526676037777-05a232554f77?q=80&w=2070&auto=format&fit=crop")' }}
                 ></div>
             </div>
@@ -32,12 +32,11 @@ export default function Competitions() {
                     Spardha '25
                 </motion.p>
 
-                {/* Huge Title */}
                 <motion.h1
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="text-6xl md:text-8xl lg:text-9xl font-bold font-sans text-white tracking-tight mb-6 drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]"
+                    className="text-5xl md:text-8xl lg:text-9xl font-bold font-sans text-white tracking-tight mb-6 drop-shadow-[0_0_30px_rgba(0,0,0,0.8)]"
                 >
                     COMPETITIONS
                 </motion.h1>

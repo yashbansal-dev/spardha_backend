@@ -94,7 +94,7 @@ export default function Navbar() {
                     {/* Logo (Top Left) */}
                     <div className="pointer-events-auto">
                         <Link href="/" className="flex items-center gap-2 md:gap-3 group ml-0 md:ml-6">
-                            <div className="relative w-24 h-24 md:w-28 md:h-28 transition-all group-hover:scale-110 flex-shrink-0">
+                            <div className="relative w-20 h-20 md:w-28 md:h-28 transition-all group-hover:scale-110 flex-shrink-0">
                                 <Image
                                     src="/assets/images/spardha_logo.png"
                                     alt="Spardha Logo"

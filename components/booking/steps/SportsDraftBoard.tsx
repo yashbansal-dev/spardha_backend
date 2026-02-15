@@ -217,12 +217,15 @@ export default function SportsDraftBoard({ cart, addToCart, removeFromCart, onNe
             if (category === 'Boys' && (sport as any).fees?.boys !== undefined) finalPrice = (sport as any).fees.boys;
             if (category === 'Girls' && (sport as any).fees?.girls !== undefined) finalPrice = (sport as any).fees.girls;
 
+            const color = category === 'Girls' ? '#ec4899' : category === 'Boys' ? '#60a5fa' : '#22d3ee';
+
             addToCart({
                 id: uniqueId,
                 name: sport.name,
                 price: finalPrice,
                 image: sport.bg,
-                category: category
+                category: category,
+                color: color
             });
         }
     }, [addToCart, removeFromCart]); // Only recreate if context helpers change (rare)
@@ -246,7 +249,7 @@ export default function SportsDraftBoard({ cart, addToCart, removeFromCart, onNe
                         </div>
                     </h2>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-24">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
                         {ALL_SPORTS.map((sport) => (
                             <SportCard
                                 key={sport.id}

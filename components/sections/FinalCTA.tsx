@@ -19,7 +19,7 @@ export default function FinalCTA() {
             {/* 1. Fixed 3-Column Grid */}
             {/* 1. Fixed 5-Column Grid (Full Width) */}
             <div className="absolute inset-0 z-0 overflow-hidden flex gap-4 justify-center items-center opacity-100 select-none pointer-events-none">
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full h-full p-4 font-sans uppercase">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2 md:gap-4 w-full h-full p-2 md:p-4 font-sans uppercase">
                     {/* Column 1 */}
                     <StaticColumn images={[
                         '/assets/gallery-all/DSC_0105.JPG',
@@ -46,14 +46,14 @@ export default function FinalCTA() {
                         '/assets/gallery-all/DSC_0232.JPG',
                         '/assets/gallery-all/DSC_0386.JPG',
                         '/assets/gallery-all/121A0238.JPG'
-                    ]} className="mt-20 hidden md:flex" />
+                    ]} className="mt-20 hidden lg:flex" />
 
                     {/* Column 5 */}
                     <StaticColumn images={[
                         '/assets/gallery-all/DSC_8174.JPG',
                         '/assets/gallery-all/DSC_0861.JPG',
                         '/assets/gallery-all/121A0326.JPG'
-                    ]} className="hidden md:flex" />
+                    ]} className="hidden lg:flex" />
                 </div>
             </div>
 
@@ -194,7 +194,7 @@ function Ticket() {
     return (
         <Link href="/register" className="block mt-8 md:mt-0 relative z-30">
             <motion.div
-                className="relative w-[340px] h-[600px] md:w-[700px] md:h-[280px] rounded-2xl cursor-none group perspective-container"
+                className="relative w-[90vw] max-w-[340px] md:max-w-none md:w-[85vw] lg:w-[700px] h-[600px] md:h-[280px] rounded-2xl cursor-none group perspective-container"
                 style={{
                     rotateX: typeof window !== 'undefined' && window.innerWidth > 768 ? rotateX : 0,
                     rotateY: typeof window !== 'undefined' && window.innerWidth > 768 ? rotateY : 0,

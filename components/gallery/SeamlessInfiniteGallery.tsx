@@ -7,9 +7,9 @@ import { smartShuffle } from '@/utils/smartShuffle';
 import { SPORTS_IMAGES } from '@/data/galleryImages';
 
 // ... existing constants ...
-const IMAGE_WIDTH = 320;
-const IMAGE_HEIGHT = 200;
-const SPACING = 40;
+const IMAGE_WIDTH = 280;
+const IMAGE_HEIGHT = 180;
+const SPACING = 15;
 const TILE_WIDTH = 5 * IMAGE_WIDTH + 5 * SPACING;
 const TILE_HEIGHT = 5 * IMAGE_HEIGHT + 5 * SPACING;
 
@@ -127,17 +127,48 @@ export default function SeamlessInfiniteGallery() {
         y.set(y.get() - e.deltaY);
     };
 
+    // --- TOUCH EVENTS FOR MOBILE ---
+    const handleTouchStart = (e: React.TouchEvent) => {
+        isDragging.current = true;
+        const touch = e.touches[0];
+        lastMousePos.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        if (!isDragging.current) return;
+        const touch = e.touches[0];
+
+        // Update cursor for visual feedback (though usually hidden on touch)
+        mouseX.set(touch.clientX);
+        mouseY.set(touch.clientY);
+
+        const dx = touch.clientX - lastMousePos.current.x;
+        const dy = touch.clientY - lastMousePos.current.y;
+
+        x.set(x.get() + dx);
+        y.set(y.get() + dy);
+
+        lastMousePos.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleTouchEnd = () => {
+        isDragging.current = false;
+    };
+
     const tiledPositions = getTiledPositions();
 
 
     return (
         <section
-            className="relative w-screen h-screen overflow-hidden bg-[#050505] cursor-none select-none"
+            className="relative w-screen h-screen overflow-hidden bg-[#050505] cursor-none select-none touch-none"
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             onWheel={handleWheel}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
         >
             {/* Custom Shuttlecock Cursor */}
             <motion.div

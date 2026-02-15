@@ -242,7 +242,7 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
     };
 
     return (
-        <div className="relative w-full h-full rounded-[30px] overflow-hidden border-[1px] border-white/10 bg-[#1a1a1a] group cursor-default">
+        <div className="relative w-full h-auto md:h-full rounded-[30px] overflow-hidden border-[1px] border-white/10 bg-[#1a1a1a] group cursor-default">
             {/* SPORT IMAGE BACKGROUND */}
             <div className="absolute inset-0 z-0">
                 <img
@@ -265,10 +265,10 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
             </div>
 
             {/* Content Layout */}
-            <div className="absolute inset-0 flex flex-col md:flex-row p-6 md:p-8 gap-8">
+            <div className="relative md:absolute md:inset-0 flex flex-col md:flex-row p-6 pt-16 md:p-8 gap-6 md:gap-8 z-30">
 
                 {/* LEFT: Branding */}
-                <div className="flex-1 flex flex-col justify-center items-center md:items-start text-center md:text-left space-y-2 md:space-y-4">
+                <div className="w-full md:flex-1 flex flex-col justify-start items-center md:items-start text-center md:text-left space-y-2 md:space-y-4">
                     <h2 className="text-3xl md:text-6xl font-black font-sans uppercase text-white tracking-tighter drop-shadow-xl m-0 leading-none">
                         {sport.name}
                     </h2>
@@ -283,11 +283,11 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
                 </div>
 
                 {/* RIGHT: Controls & Info */}
-                <div className="flex-1 flex flex-col justify-center space-y-6 z-30">
+                <div className="w-full md:flex-1 flex flex-col justify-start space-y-6 z-30">
 
                     {/* Gender Toggle - ONLY SHOW IF HAS GENDER */}
                     {sport.hasGender && (
-                        <div className="bg-black/30 backdrop-blur-sm p-1.5 rounded-full flex relative border border-white/10 w-fit mx-auto md:mx-0">
+                        <div className="bg-black/30 backdrop-blur-sm p-1.5 rounded-full flex relative border border-white/10 w-fit">
                             <div
                                 className="absolute inset-y-1.5 bg-white/10 rounded-full transition-all duration-300 w-[calc(50%-6px)]"
                                 style={{ left: gender === 'boys' ? '6px' : 'calc(50%)' }}
@@ -349,7 +349,7 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
                     )}
 
                     {/* Actions Row */}
-                    <div className="flex items-center gap-4 justify-center md:justify-start pt-2">
+                    <div className="flex items-center gap-4 justify-between md:justify-start pt-2">
                         <div className="flex flex-col">
                             <span className="text-xs text-white/50 uppercase tracking-widest font-bold">Prize Pool</span>
                             <span className="text-3xl font-gang text-white drop-shadow-lg">{activePrize}</span>
@@ -393,10 +393,10 @@ export default function EventsScrollStack() {
     const [modalData, setModalData] = useState<{ title: string, rules: string[] } | null>(null);
 
     useEffect(() => {
-        const ctx = gsap.context(() => {
+        const mm = gsap.matchMedia();
+
+        mm.add("(min-width: 768px)", () => {
             const cards = gsap.utils.toArray('.event-card') as HTMLElement[];
-
-
 
             // 1. Initial State: Force Card 0 visible immediately, others hidden down
             gsap.set(cards[0], { y: 0, opacity: 1, zIndex: 1 });
@@ -408,22 +408,20 @@ export default function EventsScrollStack() {
                     pin: true,
                     start: "top top",
                     end: `+=${cards.length * 100}%`,
-                    scrub: 0.5, // Reduced from 1 for more responsiveness
+                    scrub: 0.5,
                     anticipatePin: 1,
                     snap: {
                         snapTo: 1 / (cards.length - 1),
-                        duration: { min: 0.1, max: 0.3 }, // Faster snapping
-                        delay: 0.1, // Slight delay before snapping kicks in
-                        ease: "power2.out", // Smoother ease
-                        inertia: false // Direct mapping
+                        duration: { min: 0.1, max: 0.3 },
+                        delay: 0.1,
+                        ease: "power2.out",
+                        inertia: false
                     },
                     invalidateOnRefresh: true,
                     onRefresh: () => {
-                        // Ensure visibility persists on refresh
                         gsap.set(cards[0], { opacity: 1, y: 0 });
                     },
                     onUpdate: (self) => {
-                        // Update current card index based on scroll progress
                         const progress = self.progress;
                         const index = Math.min(Math.floor(progress * cards.length), cards.length - 1);
                         setCurrentCardIndex(index);
@@ -431,41 +429,25 @@ export default function EventsScrollStack() {
                 }
             });
 
-            // Stack animation
             cards.forEach((card, i) => {
                 if (i === 0) return;
-
-                // 1. Current card slides UP
                 tl.to(card, {
                     y: 0,
                     duration: 1,
                     ease: "none"
                 }, i - 1);
-
-                // 2. Previous cards push back - DISABLED as per user request to remove "transition" effect
-                /* 
-                for (let j = 0; j < i; j++) {
-                    const prevCard = cards[j];
-                    const depth = i - j;
-
-                    tl.to(prevCard, {
-                        scale: 1 - (depth * 0.05),
-                        y: -(depth * 25), // Move up slightly
-                        filter: `blur(${depth * 3}px) brightness(${1 - depth * 0.15})`, // Blur and dim
-                        duration: 1,
-                        ease: "none"
-                    }, i - 1);
-                } 
-                */
             });
 
-        }, sectionRef);
+            return () => {
+                // Optional cleanup if needed
+            };
+        });
 
-        return () => ctx.revert();
+        return () => mm.revert();
     }, []);
 
     return (
-        <section ref={sectionRef} className="relative h-screen w-full bg-[#1a1a1a] overflow-hidden">
+        <section ref={sectionRef} className="relative min-h-[100dvh] w-full bg-[#1a1a1a] overflow-x-hidden">
 
             {/* Background Elements */}
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-[#111] to-[#000] z-0"></div>
@@ -479,14 +461,12 @@ export default function EventsScrollStack() {
             </div>
 
             {/* CARDS CONTAINER */}
-            <div ref={wrapperRef} className="relative w-full h-full flex items-center justify-center z-10 perspective-1000">
+            <div ref={wrapperRef} className="relative w-full h-auto md:h-full flex flex-col md:flex-row items-center justify-center z-10 md:perspective-1000 pb-32 md:pb-0 gap-10 md:gap-0 pt-40 md:pt-0">
                 {SPORTS_DATA.map((sport, i) => (
                     <div
                         key={sport.id}
-                        className="event-card absolute w-[95%] md:w-[900px] h-[65vh] md:h-auto md:aspect-[1.8/1] rounded-[30px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] origin-bottom will-change-transform"
+                        className="event-card relative md:absolute w-[90%] md:w-[90%] md:max-w-[900px] h-auto min-h-[500px] md:min-h-[500px] md:h-auto md:aspect-[1.8/1] rounded-[30px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] origin-bottom will-change-transform opacity-100"
                         style={{
-                            backfaceVisibility: 'hidden',
-                            transformStyle: 'preserve-3d',
                             transform: 'translate3d(0,0,0)'
                         }}
                     >

@@ -35,23 +35,26 @@ export default function SportsArsenal() {
                 </motion.div>
             </div>
 
+            {/* CSS Animation Styles for Marquee */}
+            <style jsx>{`
+                @keyframes marquee-left {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .animate-marquee-left {
+                    display: flex;
+                    width: max-content;
+                    animation: marquee-left 40s linear infinite;
+                    will-change: transform;
+                }
+                .group:hover .animate-marquee-left {
+                    animation-play-state: paused;
+                }
+            `}</style>
+
             {/* Auto-Scrolling Marquee */}
-            <div className="relative overflow-hidden">
-                {/* Duplicate the cards for seamless loop */}
-                <motion.div
-                    className="flex gap-6 will-change-transform"
-                    style={{ backfaceVisibility: "hidden", perspective: 1000 }}
-                    animate={{
-                        x: [0, -((320 + 24) * sportsArsenal.length)],
-                    }}
-                    transition={{
-                        x: {
-                            duration: 30,
-                            repeat: Infinity,
-                            ease: "linear",
-                        },
-                    }}
-                >
+            <div className="relative overflow-hidden group">
+                <div className="animate-marquee-left flex gap-6">
                     {/* First set of cards */}
                     {sportsArsenal.map((sport, index) => (
                         <SportCard key={`first-${index}`} sport={sport} index={index} />
@@ -60,11 +63,19 @@ export default function SportsArsenal() {
                     {sportsArsenal.map((sport, index) => (
                         <SportCard key={`second-${index}`} sport={sport} index={index} />
                     ))}
-                </motion.div>
+                    {/* Triplicate set for larger screens/safety */}
+                    {sportsArsenal.map((sport, index) => (
+                        <SportCard key={`third-${index}`} sport={sport} index={index} />
+                    ))}
+                    {/* Quadruplicate set for safety */}
+                    {sportsArsenal.map((sport, index) => (
+                        <SportCard key={`fourth-${index}`} sport={sport} index={index} />
+                    ))}
+                </div>
 
                 {/* Gradient Edges */}
-                <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
-                <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
+                <div className="absolute left-0 top-0 bottom-0 w-12 md:w-32 bg-gradient-to-r from-black to-transparent pointer-events-none z-10" />
+                <div className="absolute right-0 top-0 bottom-0 w-12 md:w-32 bg-gradient-to-l from-black to-transparent pointer-events-none z-10" />
             </div>
 
             {/* Stats Banner */}

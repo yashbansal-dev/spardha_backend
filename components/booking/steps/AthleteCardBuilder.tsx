@@ -60,7 +60,7 @@ export default function AthleteCardBuilder({ data, updateData, onNext }: Props) 
     };
 
     return (
-        <div className="h-full flex flex-col lg:flex-row gap-12 items-center lg:items-start py-4 lg:py-8">
+        <div className="h-full flex flex-col lg:flex-row gap-8 lg:gap-12 items-center lg:items-start py-2 lg:py-8">
 
             {/* LEFT: Holographic Identity Card */}
             <div className="w-full lg:w-5/12 flex items-center justify-center lg:sticky lg:top-24 perspective-1000 mb-8 lg:mb-0">
@@ -68,7 +68,7 @@ export default function AthleteCardBuilder({ data, updateData, onNext }: Props) 
                     initial={{ rotateX: 10, opacity: 0 }}
                     animate={{ rotateX: 0, opacity: 1 }}
                     transition={{ duration: 0.8, type: "spring" }}
-                    className="relative w-full max-w-[340px] aspect-[340/540] bg-black/40 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(0,243,255,0.1)] group transition-all duration-500 hover:shadow-[0_0_80px_rgba(227,114,51,0.2)]"
+                    className="relative w-full max-w-[300px] md:max-w-[340px] aspect-[340/540] bg-black/40 backdrop-blur-xl rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(0,243,255,0.1)] group transition-all duration-500 hover:shadow-[0_0_80px_rgba(227,114,51,0.2)]"
                 >
                     {/* --- DECORATIVE TECH LAYERS --- */}
 
