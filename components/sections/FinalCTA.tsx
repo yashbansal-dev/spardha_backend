@@ -4,8 +4,23 @@ import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import Image from "next/image";
+import { isRegistrationOpen } from '@/utils/registrationDate';
+import RegistrationModal from '../ui/RegistrationModal';
+import { useRouter } from 'next/navigation';
 
 export default function FinalCTA() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
+
+    const handleRegisterClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isRegistrationOpen()) {
+            router.push('/register');
+        } else {
+            setIsModalOpen(true);
+        }
+    };
+
     return (
         <section id="register" className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#050505] perspective-container py-20 md:py-0">
 
@@ -119,7 +134,7 @@ export default function FinalCTA() {
                 >
                     {/* Backlight for Ticket */}
                     <div className="absolute inset-0 bg-orange-500/20 blur-[60px] -z-10 rounded-full" />
-                    <Ticket />
+                    <Ticket handleRegisterClick={handleRegisterClick} />
                 </motion.div>
             </div>
 
@@ -134,6 +149,10 @@ export default function FinalCTA() {
                                 radial-gradient(circle at 71.5% 100%, transparent 15px, black 16px);
                 }
             `}</style>
+            <RegistrationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </section>
     );
 }
@@ -158,7 +177,7 @@ function StaticColumn({ images, className }: { images: string[], className?: str
     );
 }
 
-function Ticket() {
+function Ticket({ handleRegisterClick }: { handleRegisterClick: (e: React.MouseEvent) => void }) {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
@@ -192,7 +211,7 @@ function Ticket() {
     }
 
     return (
-        <Link href="/register" className="block mt-8 md:mt-0 relative z-30">
+        <a href="/register" onClick={handleRegisterClick} className="block mt-8 md:mt-0 relative z-30">
             <motion.div
                 className="relative w-[90vw] max-w-[340px] md:max-w-none md:w-[85vw] lg:w-[700px] h-[600px] md:h-[280px] rounded-2xl cursor-none group perspective-container"
                 style={{
@@ -241,7 +260,7 @@ function Ticket() {
                             <div className="grid grid-cols-3 gap-4 my-6">
                                 <div>
                                     <div className="text-white/30 text-xs font-bold uppercase tracking-wider mb-1">DATE</div>
-                                    <div className="text-white text-lg font-mono">OCT 24-26</div>
+                                    <div className="text-white text-lg font-mono">MAR 27-29</div>
                                 </div>
                                 <div>
                                     <div className="text-white/30 text-xs font-bold uppercase tracking-wider mb-1">TIME</div>
@@ -300,6 +319,6 @@ function Ticket() {
                     style={{ transform: "translateZ(-40px) scale(0.9)" }}
                 />
             </motion.div>
-        </Link>
+        </a>
     );
 }

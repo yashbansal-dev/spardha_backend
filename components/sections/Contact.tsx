@@ -3,7 +3,23 @@
 import Link from 'next/link';
 import { FaMapMarkerAlt, FaEnvelope, FaPhone } from 'react-icons/fa';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { isRegistrationOpen } from '@/utils/registrationDate';
+import RegistrationModal from '../ui/RegistrationModal';
+
 export default function Contact() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
+
+    const handleRegisterClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isRegistrationOpen()) {
+            router.push('/register');
+        } else {
+            setIsModalOpen(true);
+        }
+    };
     return (
         <section id="contact" className="section-padding bg-black relative border-t border-white/5">
             {/* Register CTA */}
@@ -14,14 +30,20 @@ export default function Contact() {
                     <p className="font-alice text-xl text-gray-300 mb-8 max-w-2xl mx-auto relative z-10">
                         registrations are open for all events. Secure your spot now and represent your college at Spardha.
                     </p>
-                    <Link
+                    <a
                         href="/register"
+                        onClick={handleRegisterClick}
                         className="relative z-10 inline-block px-10 py-4 bg-neon-cyan text-black font-bold text-lg rounded-full shadow-[0_0_20px_rgba(0,243,255,0.4)] hover:shadow-[0_0_40px_rgba(0,243,255,0.8)] hover:scale-105 transition-all"
                     >
                         REGISTER NOW
-                    </Link>
+                    </a>
                 </div>
             </div>
+
+            <RegistrationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
 
             {/* Contact Content */}
             <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12">

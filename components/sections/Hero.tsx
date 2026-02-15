@@ -5,6 +5,9 @@ import { motion, useScroll, useTransform, useMotionValue, AnimatePresence } from
 import Link from "next/link";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
+import { isRegistrationOpen } from '@/utils/registrationDate';
+import RegistrationModal from '../ui/RegistrationModal';
+import { useRouter } from 'next/navigation';
 
 const HERO_IMAGES = [
     '/assets/images/media_1.jpeg',
@@ -19,6 +22,25 @@ export default function Hero() {
     const ref = useRef(null);
     const { scrollY } = useScroll();
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const [timeLeft, setTimeLeft] = useState({
+        days: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0
+    });
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const router = useRouter();
+
+    const handleRegisterClick = (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (isRegistrationOpen()) {
+            router.push('/register');
+        } else {
+            setIsModalOpen(true);
+        }
+    };
 
     // Slideshow Logic
     useEffect(() => {
@@ -199,7 +221,7 @@ export default function Hero() {
                             transition={{ delay: 0.8, duration: 0.8 }}
                             className="mt-8 z-50"
                         >
-                            <Link href="#register" className="group relative inline-block p-4">
+                            <a href="/register" onClick={handleRegisterClick} className="group relative inline-block p-4">
                                 {/* Main Button Container (Skewed) */}
                                 <div className="relative px-12 py-4 bg-white/5 border border-neon-cyan/50 transform -skew-x-12 hover:skew-x-0 hover:bg-neon-cyan/10 hover:border-neon-cyan transition-all duration-300 ease-out overflow-hidden">
 
@@ -223,7 +245,7 @@ export default function Hero() {
 
                                 {/* Outer Ghost Border (Echo effect) */}
                                 <div className="absolute inset-0 border border-neon-cyan/20 transform -skew-x-12 scale-105 opacity-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500 pointer-events-none" />
-                            </Link>
+                            </a>
                         </motion.div>
 
                     </div>
@@ -234,6 +256,11 @@ export default function Hero() {
 
             {/* Bottom Vignette */}
             <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-black to-transparent z-10 pointer-events-none"></div>
+
+            <RegistrationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </section>
     );
 }

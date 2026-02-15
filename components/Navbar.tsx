@@ -17,12 +17,23 @@ import {
 } from 'react-icons/io5';
 import Dock from './Dock';
 import { useCart } from '@/context/CartContext';
+import { isRegistrationOpen } from '@/utils/registrationDate';
+import RegistrationModal from './ui/RegistrationModal';
 
 export default function Navbar() {
     const router = useRouter();
     const pathname = usePathname();
     const [isScrolled, setIsScrolled] = useState(false);
     const { items, toggleCart } = useCart();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleRegisterClick = () => {
+        if (isRegistrationOpen()) {
+            router.push('/register');
+        } else {
+            setIsModalOpen(true);
+        }
+    };
 
     // Check if we're on the events page
     const isEventsPage = pathname === '/events';
@@ -76,13 +87,17 @@ export default function Navbar() {
         {
             icon: <IoTicket size={22} className="text-neon-cyan" />,
             label: 'Register',
-            onClick: () => router.push('/register'),
+            onClick: handleRegisterClick,
             className: 'border-neon-cyan/50 shadow-[0_0_10px_rgba(34,211,238,0.3)]'
         },
     ];
 
     return (
         <>
+            <RegistrationModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
             {/* Top Bar: Logo & Branding ONLY - Hidden on Gallery Page */}
             {!isGalleryPage && (
                 <motion.header
