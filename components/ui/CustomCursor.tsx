@@ -9,8 +9,8 @@ export default function CustomCursor() {
     const cursorX = useMotionValue(-100);
     const cursorY = useMotionValue(-100);
 
-    // Smooth Spring Physics for Position - Optimized for performance
-    const springConfig = { damping: 30, stiffness: 400, mass: 0.1, restDelta: 0.001 };
+    // Smooth Spring Physics for Position - Optimized for snappiness
+    const springConfig = { damping: 25, stiffness: 600, mass: 0.1, restDelta: 0.001 };
     const springX = useSpring(cursorX, springConfig);
     const springY = useSpring(cursorY, springConfig);
 
@@ -22,8 +22,8 @@ export default function CustomCursor() {
     const [isClicking, setIsClicking] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
 
-    // Throttle ref for hover detection
-    const hoverCheckRef = useRef<number>(0);
+    // Interaction check ref
+    const lastCheckRef = useRef<number>(0);
 
     // Mobile Detection & Init
     useEffect(() => {
@@ -49,11 +49,11 @@ export default function CustomCursor() {
     const handleMouseDown = useCallback(() => setIsClicking(true), []);
     const handleMouseUp = useCallback(() => setIsClicking(false), []);
 
-    // Throttled hover detection - only check every 100ms for better performance
+    // Optimized hover detection - reduced throttle to 16ms (60fps) for instant feeling
     const handleMouseOver = useCallback((e: MouseEvent) => {
         const now = Date.now();
-        if (now - hoverCheckRef.current < 100) return; // Throttle to 10fps
-        hoverCheckRef.current = now;
+        if (now - lastCheckRef.current < 16) return; 
+        lastCheckRef.current = now;
 
         const target = e.target as HTMLElement;
         // Optimized interactive element check

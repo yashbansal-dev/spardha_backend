@@ -143,6 +143,30 @@ export default function Dock({
     const mouseY = useMotionValue(Infinity);
     const isHovered = useMotionValue(0);
 
+    // Auto-detect position for desktop vs mobile to fix tooltip direction
+    const [effectivePosition, setEffectivePosition] = useState(position);
+
+    useEffect(() => {
+        const checkPosition = () => {
+            // If explicit position is 'left', keep it. Otherwise check screen width.
+            if (position === 'left') {
+                setEffectivePosition('left');
+                return;
+            }
+
+            // Matches 'xl' breakpoint in Tailwind (1280px)
+            if (window.matchMedia('(min-width: 1280px)').matches) {
+                setEffectivePosition('top');
+            } else {
+                setEffectivePosition('bottom');
+            }
+        };
+
+        checkPosition();
+        window.addEventListener('resize', checkPosition);
+        return () => window.removeEventListener('resize', checkPosition);
+    }, [position]);
+
     const maxHeight = useMemo(
         () => Math.max(dockHeight, magnification + magnification / 2 + 4),
         [magnification, dockHeight]
@@ -154,11 +178,12 @@ export default function Dock({
     const isVertical = position === 'left';
 
     // Responsive positioning via CSS: bottom on mobile/tablet, top on desktop (xl: 1280px+)
-    const containerStyles = "fixed bottom-8 xl:bottom-auto xl:top-6 left-0 right-0 z-[9999] flex items-end xl:items-start justify-center pointer-events-none pb-[env(safe-area-inset-bottom)] xl:pb-0";
+    // Increased top spacing to top-10 to prevent clipping
+    const containerStyles = "fixed bottom-8 xl:bottom-auto xl:top-10 left-0 right-0 z-[9999] flex items-end xl:items-start justify-center pointer-events-none pb-[env(safe-area-inset-bottom)] xl:pb-0";
 
     const dockStyles = isVertical
         ? `${className} pointer-events-auto flex flex-col items-center gap-4 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl py-4 px-2 shadow-[0_4px_30px_rgba(0,0,0,0.5)]`
-        : `${className} pointer-events-auto flex items-start gap-2 md:gap-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl pt-3 px-2 md:px-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] max-w-[95vw] overflow-x-auto no-scrollbar`;
+        : `${className} pointer-events-auto flex items-start gap-2 md:gap-3 rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl pt-3 px-2 md:px-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)] max-w-[95vw] overflow-x-auto xl:overflow-visible no-scrollbar`;
 
     return (
         <motion.div
@@ -202,7 +227,7 @@ export default function Dock({
                         magnification={magnification}
                         baseItemSize={baseItemSize}
                         isVertical={isVertical}
-                        position={position}
+                        position={effectivePosition}
                     >
                         <DockIcon>{item.icon}</DockIcon>
                         <DockLabel>{item.label}</DockLabel>
