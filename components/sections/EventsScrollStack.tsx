@@ -260,7 +260,7 @@ const EventCardContent = ({ sport, index, onOpenRules }: { sport: typeof SPORTS_
             <div className={`absolute inset-0 rounded-[30px] border border-white/5 group-hover:border-${sport.badgeColor.split('-')[1]}-400/50 transition-colors duration-500 pointer-events-none`}></div>
 
             {/* Top Badge */}
-            <div className={`absolute top-0 left-1/2 -translate-x-1/2 px-6 py-2 ${sport.badgeColor} text-sm font-bold font-sans uppercase tracking-[0.2em] rounded-b-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] z-20`}>
+            <div className={`absolute top-0 right-8 px-6 py-2 ${sport.badgeColor} text-sm font-bold font-sans uppercase tracking-[0.2em] rounded-b-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] z-20`}>
                 Event {index + 1}
             </div>
 
@@ -453,19 +453,21 @@ export default function EventsScrollStack() {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900/50 via-[#111] to-[#000] z-0"></div>
 
             {/* Header */}
-            <div className="absolute top-24 md:top-32 w-full text-center z-50 pointer-events-none mix-blend-normal">
-                <h2 className="text-neon-cyan font-gang tracking-[0.5em] text-xs md:text-sm uppercase mb-2 drop-shadow-md">The Arena</h2>
-                <h1 className="text-4xl md:text-6xl font-gang text-white uppercase tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)]">
-                    Event Schedule
-                </h1>
+            <div className="event-header absolute top-[11vh] w-full z-40 pointer-events-none mix-blend-normal transition-all duration-300">
+                <div className="w-full max-w-[1400px] mx-auto px-6 text-center">
+                    <h2 className="text-neon-cyan font-gang tracking-[0.5em] text-xs md:text-sm uppercase mb-2 drop-shadow-md">The Arena</h2>
+                    <h1 className="event-title text-4xl md:text-6xl xl:text-7xl font-gang text-white uppercase tracking-widest drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] transition-all duration-300">
+                        Event Schedule
+                    </h1>
+                </div>
             </div>
 
             {/* CARDS CONTAINER */}
-            <div ref={wrapperRef} className="relative w-full h-auto md:h-full flex flex-col md:flex-row items-center justify-center z-10 md:perspective-1000 pb-32 md:pb-0 gap-10 md:gap-0 pt-40 md:pt-0">
+            <div ref={wrapperRef} className="relative w-full max-w-[1400px] mx-auto h-auto md:h-[55vh] md:mt-[26vh] flex flex-col md:block items-center justify-center z-10 md:perspective-1000 pb-32 md:pb-0 gap-10 md:gap-0 pt-40 md:pt-0">
                 {SPORTS_DATA.map((sport, i) => (
                     <div
                         key={sport.id}
-                        className="event-card relative md:absolute w-[90%] md:w-[90%] md:max-w-[900px] h-auto min-h-[500px] md:min-h-[500px] md:h-auto md:aspect-[1.8/1] rounded-[30px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] origin-bottom will-change-transform opacity-100"
+                        className="event-card relative md:absolute left-0 right-0 mx-auto w-[95%] md:w-[90%] lg:w-[85%] max-w-[1200px] h-[500px] md:h-full rounded-[30px] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.8)] origin-bottom will-change-transform opacity-100 transition-all duration-300"
                         style={{
                             transform: 'translate3d(0,0,0)'
                         }}
@@ -558,6 +560,7 @@ export default function EventsScrollStack() {
                     background: rgba(255,255,255,0.2);
                     border-radius: 10px;
                 }
+
             `}</style>
         </section>
     );
