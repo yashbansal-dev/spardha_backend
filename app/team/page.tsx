@@ -16,19 +16,16 @@ const teamMembers = [
         members: [
             {
                 name: 'Vijay Chellobonia',
-                position: 'Vice-Chancellor',
-                bio: 'Leading strategic initiatives with 15+ years of experience in sports management and academic excellence.'
+                position: 'Faculty Coordinator',
+                image: '/assets/Core_photos/vijay.png',
+                bio: 'Leading strategic initiatives and academic excellence.'
             },
             {
-                name: 'Faculty Coordinator 1',
+                name: 'Deepak Sogani',
                 position: 'Faculty Coordinator',
+                image: '/assets/Core_photos/deepak_sogani.png',
                 bio: 'Dedicated to fostering student growth and ensuring smooth event execution.'
             },
-            {
-                name: 'Faculty Coordinator 2',
-                position: 'Faculty Coordinator',
-                bio: 'Supporting the vision of Spardha with academic and logistical guidance.'
-            }
         ]
     },
     {
@@ -41,11 +38,6 @@ const teamMembers = [
                 position: 'Sports Affairs',
                 image: '/assets/Core_photos/aman_prakash.jpg',
                 bio: 'Working to elevate the sports culture and infrastructure.'
-            },
-            {
-                name: 'Sports Affairs Member 2',
-                position: 'Sports Affairs',
-                bio: 'Ensuring seamless coordination between students and administration.'
             }
         ]
     },
@@ -75,6 +67,7 @@ const teamMembers = [
             {
                 name: 'Ashmit Sharma',
                 position: 'Organizing Head',
+                image: '/assets/Core_photos/ashmit_sharma_v2.png',
                 bio: 'Bridging administration and on-ground execution for India\'s premier sports fest.'
             }
         ]
