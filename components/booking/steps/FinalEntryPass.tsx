@@ -2,17 +2,19 @@
 
 import React from 'react';
 import { SportItem, UserData } from '../GamifiedWizard';
-import { FaBarcode, FaQrcode, FaCheckCircle, FaLock } from 'react-icons/fa';
+import { TeamMember } from './TeamRoster';
+import { FaBarcode, FaQrcode, FaCheckCircle, FaLock, FaUsers } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
 interface Props {
     cart: SportItem[];
     userData: UserData;
+    teamMembers?: Record<string, TeamMember[]>;
     onNext: () => void;
     onPrev: () => void;
 }
 
-export default function FinalEntryPass({ cart, userData, onNext, onPrev }: Props) {
+export default function FinalEntryPass({ cart, userData, teamMembers, onNext, onPrev }: Props) {
 
     // Calculations
     const subtotal = cart.reduce((acc, item) => acc + item.price, 0);

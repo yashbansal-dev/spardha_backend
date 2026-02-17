@@ -8,6 +8,7 @@ import SportsDraftBoard, { ALL_SPORTS } from './steps/SportsDraftBoard';
 import FinalEntryPass from './steps/FinalEntryPass';
 import ArenaPayment from './steps/ArenaPayment';
 import VictoryMoment from './steps/VictoryMoment';
+import TeamRoster, { TeamMember } from './steps/TeamRoster';
 
 import { CartItem } from '@/context/CartContext';
 
@@ -17,6 +18,10 @@ export type UserData = {
     city: string;
     email: string;
     phone: string;
+    gender: string;
+    age: string;
+    universityIdCard: string;
+    address: string;
 };
 
 export type SportItem = CartItem;
@@ -33,8 +38,22 @@ export default function GamifiedWizard() {
         college: '',
         city: '',
         email: '',
-        phone: ''
+        phone: '',
+        gender: '',
+        age: '',
+        universityIdCard: '',
+        address: ''
     });
+
+    // TEAM MEMBERS STATE: Map of eventId -> TeamMember[]
+    const [teamMembers, setTeamMembers] = useState<Record<string, TeamMember[]>>({});
+
+    const updateTeamMembers = (eventId: string, members: TeamMember[]) => {
+        setTeamMembers(prev => ({
+            ...prev,
+            [eventId]: members
+        }));
+    };
 
     // GLOBAL CART CONTEXT
     const { items: cart, addToCart, removeFromCart } = useCart();
@@ -64,16 +83,63 @@ export default function GamifiedWizard() {
 
     const [orderId, setOrderId] = useState('');
 
-    const nextStep = () => setStep(prev => prev + 1);
-    const prevStep = () => setStep(prev => prev - 1);
+    // Navigation logic with Team Roster check
+    const nextStep = () => {
+        if (step === 2) {
+            console.log('Cart items:', cart);
+            // Check if any team sports are selected
+            const hasTeamSports = cart.some(item => {
+                // Check if ID starts with known team sport IDs (to handle -Boys/-Girls suffix)
+                const teamIds = ['cricket-leather', 'football', 'basketball', 'volleyball', 'kabaddi', 'tug-of-war'];
+                const isTeamId = teamIds.some(id => item.id.startsWith(id));
+
+                const isTeam = isTeamId ||
+                    item.name.toLowerCase().includes('team') ||
+                    item.name.toLowerCase().includes('doubles');
+
+                console.log(`Checking item: ${item.name} (${item.id}) -> isTeam: ${isTeam}`);
+                return isTeam;
+            });
+
+            console.log('Has team sports:', hasTeamSports);
+
+            if (hasTeamSports) {
+                setStep(3); // Go to Team Roster
+            } else {
+                setStep(4); // Skip to Final Pass
+            }
+        } else {
+            setStep(prev => prev + 1);
+        }
+    };
+
+    const prevStep = () => {
+        if (step === 4) {
+            const hasTeamSports = cart.some(item =>
+                ['cricket-leather', 'football', 'basketball', 'volleyball', 'kabaddi', 'tug-of-war'].includes(item.id) ||
+                item.name.toLowerCase().includes('team') ||
+                item.name.toLowerCase().includes('doubles')
+            );
+            if (hasTeamSports) {
+                setStep(3); // Go back to Team Roster
+            } else {
+                setStep(2); // Go back to Draft Board
+            }
+        } else {
+            setStep(prev => prev - 1);
+        }
+    };
 
     const steps = [
         { id: 1, title: 'Athlete Profile' },
         { id: 2, title: 'Sport Selection' },
-        { id: 3, title: 'Final Pass' },
-        { id: 4, title: 'Payment' },
-        { id: 5, title: 'Victory' }
+        { id: 3, title: 'Team Roster' },
+        { id: 4, title: 'Final Pass' },
+        { id: 5, title: 'Payment' },
+        { id: 6, title: 'Victory' }
     ];
+
+
 
     return (
         <div className="min-h-screen bg-transparent text-white flex flex-col font-sans selection:bg-neon-cyan selection:text-black">
@@ -94,7 +160,7 @@ export default function GamifiedWizard() {
                     </div>
 
                     <div className="font-mono font-bold text-neon-cyan text-xs md:text-base">
-                        LEVEL {step}/5
+                        LEVEL {step}/{steps.length}
                     </div>
                 </div>
             </header>
@@ -127,24 +193,34 @@ export default function GamifiedWizard() {
                             />
                         )}
                         {step === 3 && (
-                            <FinalEntryPass
+                            <TeamRoster
                                 cart={cart}
-                                userData={userData}
+                                teamMembers={teamMembers}
+                                updateTeamMembers={updateTeamMembers}
                                 onNext={nextStep}
                                 onPrev={prevStep}
                             />
                         )}
                         {step === 4 && (
-                            <ArenaPayment
-                                onComplete={(id) => {
-                                    setOrderId(id);
-                                    nextStep();
-                                }}
+                            <FinalEntryPass
+                                cart={cart}
+                                userData={userData}
+                                teamMembers={teamMembers}
+                                onNext={nextStep}
                                 onPrev={prevStep}
-                                amount={cart.reduce((acc, item) => acc + item.price, 0) * 1.18}
                             />
                         )}
                         {step === 5 && (
+                            <ArenaPayment
+                                userData={userData}
+                                teamMembers={teamMembers} // Pass team data
+                                cart={cart}
+                                onPrev={prevStep}
+                                amount={cart.reduce((acc, item) => acc + item.price, 0) * 1.18}
+
+                            />
+                        )}
+                        {step === 6 && (
                             <VictoryMoment
                                 orderId={orderId}
                                 cart={cart}

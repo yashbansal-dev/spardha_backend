@@ -3,30 +3,113 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaCreditCard, FaWallet, FaUniversity, FaLock } from 'react-icons/fa';
+import { UserData, SportItem } from '../GamifiedWizard'; // UserData from parent
+import { TeamMember } from './TeamRoster';
 
-interface Props {
-    onComplete: (orderId: string) => void;
-    onPrev: () => void;
-    amount: number;
+// Declare Cashfree type to avoid TS errors
+declare global {
+    interface Window {
+        Cashfree: any;
+    }
 }
 
-export default function ArenaPayment({ onComplete, onPrev, amount }: Props) {
+interface Props {
+    userData: UserData;
+    teamMembers?: Record<string, TeamMember[]>;
+    cart: SportItem[];
+    onPrev: () => void;
+    amount: number;
+
+}
+
+export default function ArenaPayment({ userData, teamMembers, cart, onPrev, amount }: Props) {
     const [isProcessing, setIsProcessing] = useState(false);
     const [showTunnel, setShowTunnel] = useState(true);
+    const [paymentMethod, setPaymentMethod] = useState('CARD'); // Default method
+    const [sdkLoaded, setSdkLoaded] = useState(false);
 
-    // Initial Tunnel Effect
+    // Initial Tunnel Effect & Load SDK
     useEffect(() => {
         const timer = setTimeout(() => setShowTunnel(false), 2000);
+
+        // Load Cashfree SDK
+        const loadSdk = () => {
+            const script = document.createElement('script');
+            script.src = 'https://sdk.cashfree.com/js/v3/cashfree.js';
+            script.onload = () => {
+                console.log('✅ Cashfree SDK Loaded');
+                setSdkLoaded(true);
+            };
+            document.body.appendChild(script);
+        };
+        loadSdk();
+
         return () => clearTimeout(timer);
     }, []);
 
     const handlePayment = async () => {
+        if (!sdkLoaded) {
+            alert('Payment SDK is still loading. Please wait...');
+            return;
+        }
+
         setIsProcessing(true);
-        // Simulate Grid Lock
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        const mockOrderId = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
-        onComplete(mockOrderId);
+
+        try {
+            // 1. Create Order on Backend
+            const response = await fetch('/api/payments/create-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: amount,
+                    customerName: userData.fullName,
+                    customerEmail: userData.email,
+                    customerPhone: userData.phone,
+                    customerGender: userData.gender,
+                    customerAge: userData.age,
+                    universityName: userData.college,
+                    universityIdCard: userData.universityIdCard,
+                    address: userData.address,
+                    teamMembers: teamMembers, // Send team data
+                    items: cart.map(item => ({
+                        id: item.id,
+                        title: item.name,
+                        price: item.price
+                    }))
+                }),
+            });
+
+            const data = await response.json();
+
+            console.log('Payment Order Response:', data); // DEBUG LOG
+
+            if (data.success) {
+                console.log('Initializing Cashfree in mode:', data.data.environment); // DEBUG LOG
+                // 2. Initialize Cashfree Payment
+                const cashfree = new window.Cashfree({
+                    mode: data.data.environment || 'sandbox', // 'production' or 'sandbox'
+                });
+
+                const checkoutOptions = {
+                    paymentSessionId: data.data.payment_session_id,
+                    redirectTarget: '_self', // Redirect in same tab
+                };
+
+                cashfree.checkout(checkoutOptions);
+            } else {
+                alert('Failed to create order: ' + data.message);
+                setIsProcessing(false);
+            }
+        } catch (error) {
+            console.error('Payment Error:', error);
+            alert('Payment initialization failed.');
+            setIsProcessing(false);
+        }
     };
+
+
 
     return (
         <div className="h-full relative overflow-hidden flex items-center justify-center">
@@ -69,7 +152,11 @@ export default function ArenaPayment({ onComplete, onPrev, amount }: Props) {
 
                     <div className="grid grid-cols-2 gap-4 w-full mb-8">
                         {['UPI', 'CARD', 'NET BANKING', 'WALLET'].map((method) => (
-                            <button key={method} className="bg-white/5 hover:bg-neon-cyan hover:text-black border border-white/10 p-4 rounded-lg font-bold uppercase transition-all flex flex-col items-center gap-2">
+                            <button
+                                key={method}
+                                onClick={() => setPaymentMethod(method)}
+                                className={`p-4 rounded-lg font-bold uppercase transition-all flex flex-col items-center gap-2 border ${paymentMethod === method ? 'bg-neon-cyan text-black border-neon-cyan shadow-[0_0_20px_rgba(0,243,255,0.4)]' : 'bg-white/5 hover:bg-white/10 border-white/10 text-gray-300'}`}
+                            >
                                 {method === 'UPI' && <FaWallet className="text-xl" />}
                                 {method === 'CARD' && <FaCreditCard className="text-xl" />}
                                 {method === 'NET BANKING' && <FaUniversity className="text-xl" />}
@@ -90,7 +177,7 @@ export default function ArenaPayment({ onComplete, onPrev, amount }: Props) {
                             )}
                             {isProcessing ? 'PROCESSING...' : (
                                 <>
-                                    <FaLock /> INITIATE TRANSFER
+                                    <FaLock /> PAY ₹{amount.toFixed(2)}
                                 </>
                             )}
                         </button>
