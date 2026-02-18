@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
-const { User, Purchase } = require('./models/models');
+const { User, Purchase, TeamComposition } = require('./models/models');
 
 async function checkDB() {
     try {
